@@ -1,5 +1,9 @@
-# RISC-V Security R&D project home
+# RISC-V Security R&D project home  
 This is home for updated risc-v security project.  
+
+# Available cmake options  
+- **CMAKE_INSTALL_PREFIX**=\<path\> - specifies install path for components
+- **BUILD_SIM**=ON/OFF - enables or disables building simulators  
 
 # How to build
 ```
