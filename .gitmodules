@@ -1,0 +1,4 @@
+[submodule "src/sim/spike"]
+	path = src/sim/spike
+	url = https://github.com/gattaca-lab/riscv-isa-sim.git
+	branch = riscv_sec_rnd
