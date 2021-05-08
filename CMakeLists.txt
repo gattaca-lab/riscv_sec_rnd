@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(RISC-V_Security_RnD)
+enable_testing()
 
 # Process install directory
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -21,3 +22,5 @@ set(AVAILABLE_TOOLCHAIN "")
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/sim/")
 #include toolchains
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/toolchain/")
+#include tests
+add_subdirectory("${CMAKE_SOURCE_DIR}/src/tests/")

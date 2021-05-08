@@ -4,7 +4,8 @@ ProcessorCount(N)
 
 # Gcc toolchain related varuables
 set(GCC_SRC_DIR "${TOOLCHAIN_SRC_DIR}/gcc/")
-set(GCC_INSTALL_DIR "${INSTALL_DIR}/toolchains/")
+# FIXME: ultra ugly hack
+set(GCC_INSTALL_DIR "${INSTALL_DIR}/toolchains/" CACHE INTERNAL "GCC_INSTALL_DIR" FORCE)
 
 # Function to build gcc toolchain for rv32i_newlib target
 function(build_toolchain_rv32i_newlib EXTRA_CONFIG_ARGS)
