@@ -6,3 +6,6 @@
 	path = src/sim/qemu
 	url = https://github.com/gattaca-lab/qemu.git
 	branch = riscv_sec_rnd
+[submodule "src/toolchain/gcc"]
+	path = src/toolchain/gcc
+	url = https://github.com/riscv/riscv-gnu-toolchain.git
