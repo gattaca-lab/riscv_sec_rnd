@@ -2,3 +2,7 @@
 	path = src/sim/spike
 	url = https://github.com/gattaca-lab/riscv-isa-sim.git
 	branch = riscv_sec_rnd
+[submodule "src/sim/qemu"]
+	path = src/sim/qemu
+	url = https://github.com/gattaca-lab/qemu.git
+	branch = riscv_sec_rnd
