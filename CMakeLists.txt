@@ -9,6 +9,10 @@ else(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   file(MAKE_DIRECTORY ${INSTALL_DIR})
 endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
+# Options
+option(BUILD_SIM "BUILD_SIM" ON)
+option(BUILD_TOOLCHAIN "BUILD_TOOLCHAIN" OFF)
+
 ### Includes
 #include simulators
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/sim/")
