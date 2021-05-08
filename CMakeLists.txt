@@ -13,9 +13,11 @@ endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 option(BUILD_SIM "BUILD_SIM" ON)
 option(BUILD_TOOLCHAIN "BUILD_TOOLCHAIN" OFF)
 
+set(AVAILABLE_SIM "")
+set(AVAILABLE_TOOLCHAIN "")
+
 ### Includes
 #include simulators
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/sim/")
 #include toolchains
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/toolchain/")
-
