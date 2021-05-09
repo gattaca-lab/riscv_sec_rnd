@@ -1,0 +1,6 @@
+---
+platforms: spike
+labels:
+  - checkin
+---
+simple: { src: simple }

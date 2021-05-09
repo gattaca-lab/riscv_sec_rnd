@@ -1,0 +1,54 @@
+#!/usr/bin/env -S python -B
+
+from pathlib import Path
+
+from platforms.spike import Platform_Spike
+from builder.asm import Builder_ASM
+from builder.c import Builder_C
+from testlist import TestList
+
+import yaml
+import os
+
+ROOT_ENV = 'RISCV_RND_ROOT'
+ROOT_DIR = os.environ.get(ROOT_ENV)
+
+INFRA_ROOT = str(Path(__file__).parent.absolute())
+CORPUS_ROOT = Path(INFRA_ROOT + "/../corpus").resolve()
+
+def remove_prefix(text, prefix):
+  if text.startswith(prefix):
+    return text[len(prefix):]
+
+def testlist_info(path):
+  TL = remove_prefix(str(path), str(CORPUS_ROOT) + "/")
+  stl = TL.split("/")
+  test_type = stl[0]
+  subdir_components = stl[1:len(stl) - 1]
+  subdir = "/".join([test_type, "/".join(subdir_components)])
+  return { 'subdir': subdir, 'type': test_type, 'path': path }
+
+if ROOT_DIR == None:
+  print('"{}" environment varible is not set'.format(ROOT_ENV))
+  exit(1)
+
+CFG_PATH = os.path.join(ROOT_DIR, "share/config.yaml")
+CFG = None
+with open(CFG_PATH, 'r') as stream:
+  CFG = yaml.safe_load(stream)
+
+platforms = {}
+platforms["spike"] = Platform_Spike(CFG);
+builders = {}
+builders["asm"] = Builder_ASM(CFG, platforms)
+builders["c"] = Builder_C(CFG, platforms)
+print(CFG)
+print(builders)
+
+print(CORPUS_ROOT)
+for path in sorted(CORPUS_ROOT.rglob("*.yaml")):
+  info = testlist_info(path)
+  BUILDER_TYPE = info['type'];
+  TestList(builders[BUILDER_TYPE], info['path'], info['subdir'], os.getcwd())
+  print(info)
+

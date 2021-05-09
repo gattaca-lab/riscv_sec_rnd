@@ -1,0 +1,6 @@
+---
+platforms: all
+labels:
+  - checkin
+---
+non_simple: { src: non_simple }
