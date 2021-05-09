@@ -4,10 +4,9 @@ ProcessorCount(N)
 
 # Qemu related varuables
 set(QEMU_SRC_DIR "${SIM_SRC_DIR}/qemu")
-set(QEMU_INSTALL_DIR "${INSTALL_DIR}/qemu")
 
 # Function to build qemu simulator
-function(build_sim_qemu EXTRA_CONFIG_ARGS)
+function(build_sim_qemu QEMU_INSTALL_DIR EXTRA_CONFIG_ARGS)
   # Create build and install directories
   file(MAKE_DIRECTORY ${QEMU_INSTALL_DIR})
   ExternalProject_Add(

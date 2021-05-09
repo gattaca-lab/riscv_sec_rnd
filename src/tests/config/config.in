@@ -1,0 +1,7 @@
+sim:
+  qemu: @PREFIX_SIM_QEMU@
+  spike: @PREFIX_SIM_SPIKE@
+toolchain:
+  gcc_rv32i_newlib: @PREFIX_TOOLCHAIN_GCC_RV32I_NEWLIB@
+  gcc_rv32imc_newlib: @PREFIX_TOOLCHAIN_GCC_RV32IMC_NEWLIB@
+
