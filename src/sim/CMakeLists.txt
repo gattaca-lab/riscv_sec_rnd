@@ -1,5 +1,10 @@
 project(simulators)
 
+if (NOT BUILD_SIM)
+  message("[RND][SIM] disabled")
+  return()
+endif()
+
 set(SIM_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
 # Include simulator cmakes
@@ -17,5 +22,6 @@ if (BUILD_SIM)
   build_sim_qemu("")
   list(APPEND CUR_AVAILABLE_SIM "QEMU")
   # Update variable with available simulators in parent scope
+  message("[RND][SIM] enabled - ${CUR_AVAILABLE_SIM}")
   set(AVAILABLE_SIM ${CUR_AVAILABLE_SIM} PARENT_SCOPE)
 endif (BUILD_SIM)
