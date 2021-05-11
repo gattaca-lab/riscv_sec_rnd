@@ -22,7 +22,7 @@ pipeline {
         stage('Building components') {
             steps {
                 echo "Building components..."
-                sh 'make'
+                sh 'cd ./build && make'
             }
         }
         stage('Test') {
