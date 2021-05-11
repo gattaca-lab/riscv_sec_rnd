@@ -14,7 +14,7 @@ pipeline {
                 echo "Configuring components..."
                 sh """
                     mkdir install && \
-                    mkdir build && cd build && \
+                    mkdir build &&  cd build && \
                     cmake ../ -DCMAKE_INSTALL_PREFIX=../install
                 """
             }
