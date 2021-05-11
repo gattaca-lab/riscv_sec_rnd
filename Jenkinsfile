@@ -9,16 +9,21 @@ pipeline {
                 """
             }
         }
+        stage('Configuring components') {
+            steps {
+                echo "Configuring components..."
+                sh """
+                    mkdir install && \
+                    INSTALL_PATH=$(realpath ./install) && \
+                    mkdir build && cd build && \
+                    cmake ../ -DCMAKE_INSTALL_PREFIX=${INSTALL_PATH}
+                """
+            }
+        }
         stage('Building components') {
             steps {
-                echo 'Building components...'
-                sh """
-                    mkdir install
-                    INSTALL_PATH=$(realpath ./install)
-                    mkdir build && cd build
-                    cmake ../ -DCMAKE_INSTALL_PREFIX=${INSTALL_PATH}
-
-                """
+                echo "Building components..."
+                sh 'make'
             }
         }
         stage('Test') {
@@ -30,6 +35,11 @@ pipeline {
             steps {
                 echo 'Deploying...'
             }
+        }
+    }
+    post {
+        always {
+            cleanWs()
         }
     }
 }
