@@ -1,6 +1,6 @@
 ---
-platforms: all
+platforms: spike
 labels:
-  - checkin
+  - nightly
 ---
 non_simple: { src: non_simple }

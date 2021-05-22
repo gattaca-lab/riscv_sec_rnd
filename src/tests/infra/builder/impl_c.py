@@ -6,8 +6,8 @@ from .basic_builder import BasicBuilder
 
 class Builder_C(BasicBuilder):
   def __init__(self, CFG, platforms):
-    self.platforms = platforms
-    self.cfg = CFG
+    super().__init__(CFG, platforms)
+    self.name = "c"
     log.debug("builder <C> initialized")
 
   def prepair(self, testInfo):

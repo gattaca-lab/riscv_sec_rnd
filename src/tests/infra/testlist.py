@@ -5,16 +5,17 @@ import yaml
 import os
 
 class TestItem():
-  def __init__(self, name, platform, body, header, pwd, src_root):
+  def __init__(self, name, platform, builder, header, attrs, pwd, src_root):
     self._name = name
     self._platform = platform
+    self._builder = builder
     self._pwd = pwd
-    self._attrs = body
+    self._attrs = attrs
     self._fallback = header
     self._src_root = src_root
 
   def name(self):
-    return "{}_{}".format(self._platform, self._name)
+    return "{}_{}_{}".format(self._builder.name, self._platform, self._name)
 
   def wd(self):
     return os.path.join(self._pwd, self.name())
@@ -39,7 +40,7 @@ class TestItem():
 
     raise "could not find property {}".format(prop)
 
-def extractPlatforms(header, body):
+def extractPlatforms(header, body, bldr):
   platforms = None
   if 'platforms' in body:
     platforms = body['platforms']
@@ -58,28 +59,39 @@ def extractPlatforms(header, body):
 
 
 class TestList():
+
+  def tests(self):
+    return self._list
+
   def __init__(self, builder, the_list, subdir, output):
-    self.list = []
+
+    self._builder = builder
+    self._list = []
+    self._source = the_list
+
     SRC_ROOT = str(Path(the_list).parent.absolute())
-    log.info("Testlist: {}".format(the_list))
-    log.debug("    OutDir: {}".format(output))
-    Dir = os.path.join(output, subdir)
+    log.info("Testlist file: {}".format(the_list))
+
+    self._outdir = os.path.join(output, subdir)
+    log.debug("    OutDir: {}".format(self._outdir))
+
 
     # Here we have a race condition - but I don't bother
-    if not os.path.exists(Dir):
-      os.makedirs(Dir)
+    if not os.path.exists(self._outdir):
+      os.makedirs(self._outdir)
 
     # TODO: consider creating another directory named after the testlist file
-    log.debug("   FullDir: {}".format(Dir))
+    log.debug("   FullDir: {}".format(self._outdir))
 
     with open(str(the_list), 'r') as stream:
       header, body = yaml.safe_load_all(stream)
       log.debug(header, body)
       for name, args in body.items():
-        platforms = extractPlatforms(header, args)
+        platforms = extractPlatforms(header, args, builder)
         for platform in platforms:
-          test_description = TestItem(name, platform, body, args, Dir, SRC_ROOT)
-          test = builder.prepair(test_description)
-          self.list.append(test)
-    log.info("    testlist has {} items".format(len(self.list)))
+          test_description = TestItem(name, platform, builder,
+                                      header, args, self._outdir, SRC_ROOT)
+          #test = builder.prepair(test_description)
+          self._list.append(test_description)
+    log.info("    testlist has {} items".format(len(self._list)))
 

@@ -4,8 +4,18 @@ from pathlib import Path
 import logging as log
 
 class BasicBuilder:
-  def __init__(self):
-    pass
+  def __init__(self, CFG,  platforms):
+    self.cfg = CFG
+    self.platforms = platforms
+
+  def platforms():
+    return self.platforms
+
+  def config():
+    return self.cfg
+
+  def name(self):
+    return self.name
 
   def renderRubyScript(self, RubyScript, KV, TemplatePath):
     with open(RubyScript, 'w') as f:

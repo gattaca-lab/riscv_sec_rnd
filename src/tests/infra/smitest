@@ -1,39 +1,43 @@
 #!/usr/bin/env -S python3 -B
 
-from pathlib import Path
+import sys
+MIN_PYTHON = (3, 6)
+if sys.version_info < MIN_PYTHON:
+  sys.exit("Python %s.%s or later is required.\n" % MIN_PYTHON)
+
+import os
 import logging as log
 log.basicConfig(format='%(filename)s:%(lineno)d:%(levelname)s:%(message)s',
-                level=log.DEBUG)
+                level=os.environ.get('VERBOSE', None))
+
+import yaml
+import argparse
+
+opt = argparse.ArgumentParser(
+  description='Swiss army knife for your testing infrastructure')
+opt.add_argument('--labels', action='append', help='filter tests by labels')
+opt.add_argument('--filter', action='append', help='fitter tests by expression')
+opt.add_argument('--wd', help='set working directory')
+opt.add_argument('--run', action="store_true", help='run tests')
+opt.add_argument('-j', '--jobs', type=int, help='number of threads to use')
+opt.add_argument('-l', '--list', action="store_true", help='list found tests')
+args = opt.parse_args()
+
+from pathlib import Path
 
 from platforms.spike import Platform_Spike
 from builder.impl_asm import Builder_ASM
 from builder.impl_c import Builder_C
 from testlist import TestList
 
-import yaml
-import os
-
 ROOT_ENV = 'RISCV_RND_ROOT'
 ROOT_DIR = os.environ.get(ROOT_ENV)
-
-INFRA_ROOT = str(Path(__file__).parent.absolute())
-CORPUS_ROOT = Path(INFRA_ROOT + "/../corpus").resolve()
-
-def remove_prefix(text, prefix):
-  if text.startswith(prefix):
-    return text[len(prefix):]
-
-def testlist_info(path):
-  TL = remove_prefix(str(path), str(CORPUS_ROOT) + "/")
-  stl = TL.split("/")
-  test_type = stl[0]
-  subdir_components = stl[1:len(stl) - 1]
-  subdir = "/".join([test_type, "/".join(subdir_components)])
-  return { 'subdir': subdir, 'type': test_type, 'path': str(path) }
-
 if ROOT_DIR == None:
   log.error('"{}" environment varible is not set'.format(ROOT_ENV))
   exit(1)
+
+INFRA_ROOT = str(Path(__file__).parent.absolute())
+CORPUS_ROOT = Path(INFRA_ROOT + "/../corpus").resolve()
 
 CFG_PATH = os.path.join(ROOT_DIR, "share/config.yaml")
 CFG = None
@@ -50,10 +54,55 @@ builders["c"] = Builder_C(CFG, platforms)
 log.debug(builders)
 
 log.info("tests root: {}".format(CORPUS_ROOT))
+
+ALL_tests = []
+
+def removePrefix(text, prefix):
+  if text.startswith(prefix):
+    return text[len(prefix):]
+
+def testlist_info(path):
+  TL = removePrefix(str(path), str(CORPUS_ROOT) + "/")
+  stl = TL.split("/")
+  test_type = stl[0]
+  subdir_components = stl[1:len(stl) - 1]
+  subdir = "/".join([test_type, "/".join(subdir_components)])
+  return { 'subdir': subdir, 'type': test_type, 'path': str(path) }
+
+def filterTests(tests, labels, expr):
+  labels = [l.strip() for l in ",".join(labels).split(",")]
+  result = []
+  for t in tests:
+    Include = False
+    for lbl in labels:
+      ExLbl = False
+      ExLbl = lbl.startswith("-")
+      if ExLbl:
+         lbl = lbl[1:]
+      if lbl in t.labels():
+        if ExLbl:
+          Include = False
+        else:
+          Include = True
+    if Include:
+      result.append(t)
+  return result
+
 for path in sorted(CORPUS_ROOT.rglob("*.yaml")):
   log.debug("discovering testlist at {}".format(path))
   info = testlist_info(path)
   log.debug(info)
   BUILDER_TYPE = info['type'];
-  TestList(builders[BUILDER_TYPE], info['path'], info['subdir'], os.getcwd())
+  TL = TestList(builders[BUILDER_TYPE], info['path'], info['subdir'], os.getcwd())
+  ALL_tests.extend(TL.tests())
 
+matched = filterTests(ALL_tests, args.labels, args.filter)
+
+if args.list:
+  for test in matched:
+    print(test.name())
+
+print("{} tests found!".format(len(matched)))
+
+if args.run or not args.list:
+   print("RUN!!!")

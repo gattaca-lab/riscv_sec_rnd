@@ -3,8 +3,8 @@ from .basic_builder import BasicBuilder
 
 class Builder_ASM(BasicBuilder):
   def __init__(self, CFG, platforms):
-    self.platforms = platforms
-    self.cfg = CFG
+    super().__init__(CFG, platforms)
+    self.name = "asm"
     log.debug("builder <ASM> initialized")
 
   def prepair(self, testInfo):
