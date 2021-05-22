@@ -1,7 +1,19 @@
-sim:
-  qemu: @PREFIX_SIM_QEMU@
-  spike: @PREFIX_SIM_SPIKE@
+platform:
+  qemu_rv32imc:
+    sim_exe: @PREFIX_SIM_QEMU@/bin/qemu-system-riscv32
+  spike_rv32imc:
+    sim_exe: @PREFIX_SIM_SPIKE@/bin/spike
 toolchain:
-  gcc_rv32i_newlib: @PREFIX_TOOLCHAIN_GCC_RV32I_NEWLIB@
-  gcc_rv32imc_newlib: @PREFIX_TOOLCHAIN_GCC_RV32IMC_NEWLIB@
+  gcc_rv32i_newlib:
+    root: @PREFIX_TOOLCHAIN_GCC_RV32I_NEWLIB@
+    compiler_c: @PREFIX_TOOLCHAIN_GCC_RV32I_NEWLIB@/bin/riscv32-unknown-elf-gcc
+    compiler_cpp: @PREFIX_TOOLCHAIN_GCC_RV32I_NEWLIB@/bin/riscv32-unknown-elf-g++
+    c_flags: -march=rv32i
+    cpp_flags: -march=rv32i
+  gcc_rv32imc_newlib:
+    root: @PREFIX_TOOLCHAIN_GCC_RV32IMC_NEWLIB@
+    compiler_c: @PREFIX_TOOLCHAIN_GCC_RV32IMC_NEWLIB@/bin/riscv32-unknown-elf-gcc
+    compiler_cpp: @PREFIX_TOOLCHAIN_GCC_RV32IMC_NEWLIB@/bin/riscv32-unknown-elf-g++
+    c_flags: -march=rv32imc
+    cpp_flags: -march=rv32imc
 

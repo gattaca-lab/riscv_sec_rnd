@@ -1,5 +1,5 @@
 ---
-platforms: spike
+platforms: spike, spike_imc
 labels:
   - checkin
 ---
