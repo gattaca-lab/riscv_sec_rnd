@@ -14,3 +14,4 @@ cd ..
 cmake riscv_sec_rnd -DCMAKE_INSTALL_PREFIX=<path> -Bbuild
 cmake  --build build --target install
 ```
+
