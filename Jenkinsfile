@@ -28,6 +28,9 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing...'
+                sh """
+                    RISCV_RND_ROOT=install ./src/tests/infra/smitest --labels checkin --wd ci_run
+                """
             }
         }
         stage('Deploy') {
