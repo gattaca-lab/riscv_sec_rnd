@@ -1,6 +1,6 @@
 ---
 platforms: spike
 labels:
-  - checkin
+  - nightly
 ---
 basic: { src: basic }

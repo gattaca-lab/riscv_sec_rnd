@@ -13,9 +13,19 @@ class TestItem():
     self._attrs = attrs
     self._fallback = header
     self._src_root = src_root
+    self._status = None
+
+  def setStatus(self, status):
+    self._status = status
+
+  def getStatus(self):
+    return self._status
 
   def name(self):
     return "{}_{}_{}".format(self._builder.name, self._platform, self._name)
+
+  def builder(self):
+    return self._builder
 
   def wd(self):
     return os.path.join(self._pwd, self.name())
@@ -75,7 +85,6 @@ class TestList():
     self._outdir = os.path.join(output, subdir)
     log.debug("    OutDir: {}".format(self._outdir))
 
-
     # Here we have a race condition - but I don't bother
     if not os.path.exists(self._outdir):
       os.makedirs(self._outdir)
@@ -91,7 +100,6 @@ class TestList():
         for platform in platforms:
           test_description = TestItem(name, platform, builder,
                                       header, args, self._outdir, SRC_ROOT)
-          #test = builder.prepair(test_description)
           self._list.append(test_description)
     log.info("    testlist has {} items".format(len(self._list)))
 

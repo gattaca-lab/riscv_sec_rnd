@@ -1,5 +1,7 @@
-import logging as log
 from distutils.dir_util import copy_tree
+from pathlib import Path
+import glob
+import logging as log
 import os
 
 from .basic_builder import BasicBuilder
@@ -14,10 +16,15 @@ class Builder_C(BasicBuilder):
     TestName = testInfo.name()
     Platform = testInfo.platform()
     log.debug("<C> Builder prepair test <{}> in {}".format(TestName, testInfo.wd()))
-    full_path = os.path.join(testInfo.wd(), TestName)
     log.debug("   test <{}> src: {}".format(TestName, testInfo.src()))
-    log.debug("   test <{}> coping sources to: {}".format(TestName, full_path))
-    copy_tree(testInfo.src(), full_path)
+    log.debug("   test <{}> coping sources to: {}".format(TestName, testInfo.wd()))
+    copy_tree(testInfo.src(), testInfo.wd())
+
+    pcwd = os.getcwd()
+    os.chdir(testInfo.wd())
+    Sources = [f"\"{str(s)}\"" for s in glob.glob("**.c")]
+    os.chdir(pcwd)
+
     # copy platform configuration files
     # create list of sources
     # render makefile
@@ -27,8 +34,8 @@ class Builder_C(BasicBuilder):
       "@platform_compiler" : "gcc",
       "@platform_cflags" : [],
       "@test_binary" : test_binary,
-      "@src_files" : [],
-      "@run_string" : ""
+      "@src_files" : Sources,
+      "@run_string" : "build/test.elf"
     }
     self.renderMakefile(testInfo.wd(), KV, "makefile_c.erb")
     return testInfo
