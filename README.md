@@ -10,7 +10,7 @@ This is home for updated risc-v security project.
 ```
 git clone https://github.com/gattaca-lab/riscv_sec_rnd && cd riscv_sec_rnd
 git submodule update --init --remote
-mkdir tmp && cd tmp
-cmake ../ -DCMAKE_INSTALL_PREFIX=<path>
-make
+cd ..
+cmake riscv_sec_rnd -DCMAKE_INSTALL_PREFIX=<path> -Bbuild
+cmake  --build build --target install
 ```
