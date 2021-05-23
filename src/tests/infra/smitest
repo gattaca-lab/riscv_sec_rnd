@@ -56,6 +56,11 @@ log.debug(builders)
 
 log.info("tests root: {}".format(CORPUS_ROOT))
 
+if args.wd:
+  print(f"working directory: {args.wd}")
+  Path(args.wd).mkdir(parents=True, exist_ok=True)
+  os.chdir(args.wd)
+
 ALL_tests = []
 
 def removePrefix(text, prefix):
