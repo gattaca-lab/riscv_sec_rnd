@@ -20,9 +20,19 @@ pipeline {
         stage('Building components') {
             steps {
                 echo "Building components..."
-                sh """
-                    cmake  --build build --target install
-                """
+                script {
+                try {
+                    sh '''
+                        cmake  --build build --target install
+                    '''
+                } catch (err) {
+                    echo err.getMessage()
+                    sh '''
+                        sed -i "/@value{srcdir}/d" src/toolchain/gcc/riscv-gcc/gcc/doc/invoke.texi
+                        cmake  --build build --target install
+                    '''
+                }
+                }
             }
         }
         stage('Test') {
