@@ -5,8 +5,11 @@ pipeline {
             steps {
                 echo 'Fetching submodules...'
                 sh """
-                    git submodule update --init --remote
+                    git submodule update --init --remote --recursive --depth 1
                 """
+                sh '''
+                    sed -i "/@value{srcdir}/d" src/toolchain/gcc/riscv-gcc/gcc/doc/invoke.texi
+                '''
             }
         }
         stage('Configuring components') {
@@ -20,9 +23,9 @@ pipeline {
         stage('Building components') {
             steps {
                 echo "Building components..."
-                sh """
+                sh '''
                     cmake  --build build --target install
-                """
+                '''
             }
         }
         stage('Test') {
