@@ -13,16 +13,16 @@ pipeline {
             steps {
                 echo "Configuring components..."
                 sh """
-                    mkdir install && \
-                    mkdir build && cd build && \
-                    cmake ../ -DCMAKE_INSTALL_PREFIX=../install
+                    cmake . -DCMAKE_INSTALL_PREFIX=install -Bbuild
                 """
             }
         }
         stage('Building components') {
             steps {
                 echo "Building components..."
-                sh 'cd ./build && make'
+                sh """
+                    cmake  --build build --target install
+                """
             }
         }
         stage('Test') {
